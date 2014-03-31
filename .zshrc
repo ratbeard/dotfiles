@@ -16,22 +16,16 @@ path=(
 export MANPATH="/usr/local/man:/usr/local/mysql/man:/usr/local/git/man:$MANPATH"
 
 # Rbenv
-#eval "$(rbenv init -)"
+if which rbenv > /dev/null; then
+	eval "$(rbenv init -)"
+fi
 
 #
 # Aliases
 #
-alias r='. ~/.zshrc'
-alias e='$EDITOR ~/.dotfiles'
-alias dnsflush="sudo killall -HUP mDNSResponder"
-if $(gls &>/dev/null); then
-  alias ls="gls -F --color"
-  alias l="gls -lAh --color"
-  alias ll="gls -l --color"
-  alias la='gls -A --color'
-fi
-
 # Tier 1
+alias r='. ~/.zshrc'
+alias e='$EDITOR ~/dotfiles'
 alias ..="cd .."
 alias ...="cd ../.."
 function o() { open ${1:-./} }
@@ -43,23 +37,195 @@ alias here="pwd | tr '\n' ' '| pbcopy"
 alias goto='cd `pbpaste`' 
 alias cpy="pbcopy"
 alias pst="pbpaste"
+# Trim new lines and copy to clipboard
+#alias c="tr -d '\n' | pbcopy"
+
+if $(gls &>/dev/null); then
+  alias ls="gls -F --color"
+  alias l="gls -lAh --color"
+  alias ll="gls -l --color"
+  alias la='gls -A --color'
+fi
 
 # Tier 3
-alias myip="ifconfig en0 | grep "inet" | grep -v inet6 | sed 's/.*inet \([0-9]*\.[0-9]*\.[0-9]*\.[0-9]*\).*$/\1/'"
-alias apache-edit="sudo open /etc/apache2/httpd.conf"
-alias apache-restart="sudo /usr/sbin/apachectl restart"
+alias dnsflush="dscacheutil -flushcache && killall -HUP mDNSResponder"
+alias whois="whois -h whois-servers.net"
 
+# IP
+alias ip="dig +short myip.opendns.com @resolver1.opendns.com"
+alias localip="ipconfig getifaddr en1"
+alias ips="ifconfig -a | grep -o 'inet6\? \(addr:\)\?\s\?\(\(\([0-9]\+\.\)\{3\}[0-9]\+\)\|[a-fA-F0-9:]\+\)' | awk '{ sub(/inet6? (addr:)? ?/, \"\"); print }'"
+
+# View HTTP traffic
+alias sniff="sudo ngrep -d 'en1' -t '^(GET|POST) ' 'tcp and port 80'"
+alias httpdump="sudo tcpdump -i en1 -n -s 0 -w - | grep -a -o -E \"Host\: .*|GET \/.*\""
+
+# OS X has no `md5sum`, so use `md5` as a fallback
+command -v md5sum > /dev/null || alias md5sum="md5"
+command -v sha1sum > /dev/null || alias sha1sum="shasum"
+
+# Recursively delete `.DS_Store` files
+alias cleanup="find . -type f -name '*.DS_Store' -ls -delete"
+
+# Empty the Trash on all mounted volumes and the main HDD
+# Also, clear Apple’s System Logs to improve shell startup speed
+alias emptytrash="sudo rm -rfv /Volumes/*/.Trashes; sudo rm -rfv ~/.Trash; sudo rm -rfv /private/var/log/asl/*.asl"
+
+# Show/hide hidden files in Finder
+alias show="defaults write com.apple.finder AppleShowAllFiles -bool true && killall Finder"
+alias hide="defaults write com.apple.finder AppleShowAllFiles -bool false && killall Finder"
+
+# Hide/show all desktop icons (useful when presenting)
+alias hidedesktop="defaults write com.apple.finder CreateDesktop -bool false && killall Finder"
+alias showdesktop="defaults write com.apple.finder CreateDesktop -bool true && killall Finder"
+
+# URL-encode strings
+alias urlencode='python -c "import sys, urllib as ul; print ul.quote_plus(sys.argv[1]);"'
+
+# JavaScriptCore REPL
+jscbin="/System/Library/Frameworks/JavaScriptCore.framework/Versions/A/Resources/jsc"
+[ -e "${jscbin}" ] && alias jsc="${jscbin}"
+unset jscbin
+
+# PlistBuddy alias, because sometimes `defaults` just doesn’t cut it
+alias plistbuddy="/usr/libexec/PlistBuddy"
+
+# Lock the screen (when going AFK)
+alias afk="/System/Library/CoreServices/Menu\ Extras/User.menu/Contents/Resources/CGSession -suspend"
+
+# Reload the shell (i.e. invoke as a login shell)
+alias reload="exec $SHELL -l"
 
 # Create a new shell script
 new-script() { 
   echo "#!/bin/bash" > $1
   chmod +x $1 
+	$EDITOR $1
 }
 
-# GRC colorizes nifty unix tools all over the place
+# GRC colorizes unix tools
 if $(grc &>/dev/null) && ! $(brew &>/dev/null); then
   source `brew --prefix`/etc/grc.bashrc
 fi
+
+# Pipe public key to clipboard
+alias pubkey="more ~/.ssh/id_dsa.public | pbcopy | echo '=> Public key copied to pasteboard.'"
+#
+# Git
+#
+
+# Use `hub` as our git wrapper:
+#   http://defunkt.github.com/hub/
+hub_path=$(which hub)
+if (( $+commands[hub] )); then
+  alias git=$hub_path
+fi
+
+alias g='git'
+alias clone="git clone"
+
+# Viewing
+alias gl="git log"
+alias gll="git log --graph --pretty=format:'%Cred%h%Creset %an: %s - %Creset %C(yellow)%d%Creset %Cgreen(%cr)%Creset' --abbrev-commit --date=relative"
+alias glp="git log -p"
+alias gs='git status -sb' # upgrade your git if -sb breaks for you. it's fun.
+# alias grm="git status | grep deleted | awk '{\$1=\$2=\"\"; print \$0}' | \
+           # perl -pe 's/^[ \t]*//' | sed 's/ /\\\\ /g' | xargs git rm"
+alias gd='git diff'
+alias gdc='git diff --cached'
+
+# Commiting
+function ga() { git add ${1:-./} }
+alias gA="git add -A :/"
+alias gap="git add -p"
+alias gc='git commit'
+alias gca='git commit -a'
+
+# Branches
+alias gco='git checkout'
+alias gb='git branch'
+alias gbn='git checkout -b'
+
+# Remotes
+# alias gp='git push origin HEAD'
+# alias gl='git pull --prune'
+
+# Git svn
+alias gsr="git svn rebase"
+alias gsd="git svn dcommit"
+
+
+
+#
+# Ruby
+#
+alias rb='rbenv local 1.8.7-p358'
+alias be="bundle exec"
+alias migrate='bundle exec rake db:migrate db:test:clone'
+alias seed="bundle exec rake db:seed"
+
+# rehash shims
+#rbenv rehash 2>/dev/null
+
+# shell thing
+rbenv() {
+  command="$1"
+  if [ "$#" -gt 0 ]; then
+    shift
+  fi
+
+  case "$command" in
+  shell)
+    eval `rbenv "sh-$command" "$@"`;;
+  *)
+    command rbenv "$command" "$@";;
+  esac
+}
+
+
+#
+# tmux
+#
+function tm() {
+	[[ -z "$1" ]] && { echo "usage: tm <session>" >&2; return 1; }
+	tmux has -t $1 && tmux attach -t $1 || tmux new -s $1
+}
+
+function __tmux-sessions() {
+ local expl
+ local -a sessions
+ sessions=( ${${(f)"$(command tmux list-sessions)"}/:[ $'\t']##/:} )
+ _describe -t sessions 'sessions' sessions "$@"
+}
+#compdef __tmux-sessions tm
+
+
+
+#
+# Svn
+#
+alias svns="svn st"
+alias svnu="svn up"
+alias svnkill="find . -name .svn -print0 | xargs -0 rm -rf"
+
+# Show last log entries, default 5
+function svnl () {
+  svn log -l ${1:-5}
+}
+# Color diffs for SVN, http://www.zalas.eu/viewing-svn-diff-result-in-colors
+function svnd () {
+  svn diff "${@}" | colordiff | less -R;
+}
+
+# Pipe diff to mate
+function svndm () {
+  if [ "$1" != "" ]; then
+    svn diff $@ | mate;
+  else
+    svn diff | mate;
+  fi
+}
+
 
 #
 # Secrets
@@ -71,15 +237,6 @@ fi
 # initialize autocomplete here, otherwise functions won't be loaded
 autoload -U compinit
 compinit
-
-# load every completion after autocomplete loads
-#for file in ${(M)config_files:#*/completion.zsh}
-#do
-  #source $file
-#done
-
-#unset config_files
-#
 
 #
 # Zsh Config
@@ -95,7 +252,10 @@ export CLICOLOR=true
 HISTFILE=~/.zsh_history
 HISTSIZE=10000
 SAVEHIST=10000
+export HISTIGNORE="ls:cd:cd -:pwd:exit:date:* --help"
 setopt APPEND_HISTORY # adds history
+setopt SHARE_HISTORY # share history between sessions ???
+setopt EXTENDED_HISTORY # add timestamps to history
 setopt INC_APPEND_HISTORY SHARE_HISTORY  # adds history incrementally and share it across sessions
 setopt HIST_IGNORE_ALL_DUPS  # don't record dupes in history
 setopt HIST_REDUCE_BLANKS
@@ -105,8 +265,8 @@ setopt NO_LIST_BEEP
 setopt LOCAL_OPTIONS # allow functions to have local options
 setopt LOCAL_TRAPS # allow functions to have local traps
 setopt HIST_VERIFY
-setopt SHARE_HISTORY # share history between sessions ???
-setopt EXTENDED_HISTORY # add timestamps to history
+export LANG="en_US.UTF-8" # Prefer US English and use UTF-8
+export LC_ALL="en_US.UTF-8"
 setopt PROMPT_SUBST
 #setopt CORRECT
 setopt COMPLETE_IN_WORD
@@ -117,6 +277,8 @@ setopt complete_aliases # don't expand aliases _before_ completion has finished
 zle -N newtab
 zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}' # matches case insensitive for lowercase
 zstyle ':completion:*' insert-tab pending # pasting with tabs doesn't perform completion
+autoload zmv # nice multi-move util
+export MANPAGER="less -X" # Don’t clear the screen after quitting a manual page
 
 # zsh sets the shell to vi mode automatically if EDITOR is set to vim.  It was
 # tricky to track down why ctrl+r wasn't doing history search (its not bound in
@@ -246,5 +408,24 @@ function title() {
     print -Pn "\e]2;$2\a" # plain xterm title ($3 for pwd)
     ;;
   esac
+}
+
+
+
+#
+# Functions
+#
+# Determine size of a file or total size of a directory
+function fs() {
+	if du -b /dev/null > /dev/null 2>&1; then
+		local arg=-sbh
+	else
+		local arg=-sh
+	fi
+	if [[ -n "$@" ]]; then
+		du $arg -- "$@"
+	else
+		du $arg .[^.]* *
+	fi
 }
 

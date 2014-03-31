@@ -25,7 +25,7 @@ link_files () {
 }
 
 dot_files () {
-	find $DOTFILES_ROOT -maxdepth 1 ! -name "README*" ! -name ".DS_Store" ! -path $DOTFILES_ROOT
+	find $DOTFILES_ROOT -maxdepth 1 ! -name "README*" ! -name ".DS_Store" ! -path $DOTFILES_ROOT ! -name .git ! -name .gitignore
 }
 
 install_dotfiles () {
@@ -33,7 +33,7 @@ install_dotfiles () {
 
   overwrite_all=false
   backup_all=false
-  skip_all=false
+  skip_all=true
 
   for source in `dot_files`; do
 		dest="$HOME/$(basename $source)"
@@ -92,23 +92,4 @@ install_dotfiles () {
 }
 
 install_dotfiles
-
-# Install vim bundles
-vim +PluginInstall +qall
-
-# If we are on a mac, lets install and setup homebrew
-if [ "$(uname -s)" == "xxDarwin" ]; then
-  info "installing dependencies"
-  if . bin/dot > /tmp/dotfiles-dot 2>&1; then
-    success "dependencies installed"
-  else
-    fail "error installing dependencies"
-  fi
-fi
-
-echo ''
-echo '  All installed!'
-
-
-
 

@@ -1,10 +1,8 @@
 set nocompatible
 let mapleader = ","
-
 "
 " Bundles
 "
-" Update with :BundleInstall!
 filetype off
 set rtp+=~/.vim/bundle/vundle/
 call vundle#rc()
@@ -97,9 +95,8 @@ set number                                   " show line numbers
 set ttyfast                                  " Optimize for fast terminal connections
 set encoding=utf-8 nobomb          " Use UTF-8 without BOM
 set history=1000                             " limit :cmdline history   
-set novisualbell                             " no blinking .
+set noeb vb t_vb=                            " no error bells
 set nowrap                                   " no carriage returns
-set noerrorbells                             " no noise.
 set laststatus=2                             " always show status line.
 set tabstop=2                                " number of spaces of tab character
 set shiftwidth=2                             " number of spaces to (auto)indent
@@ -124,9 +121,8 @@ set cursorline                               " turn on line highlighting
 set hlsearch                                 " turn on highlighted search     
 set hidden                                   " move to buffer without saving current
 set clipboard+=unnamed                       " use system clipboard
-set shortmess=atI 						 	 " skip intro message
-set noerrorbells							 " Disable error bells
-set backupdir=~/.vim/backups				 " Centralize backups, swapfiles and undo history
+set shortmess=atI                            " skip intro message
+set backupdir=~/.vim/backups                 " Centralize backups, swapfiles and undo history
 set directory=~/.vim/swaps
 set undodir=~/.vim/undo
 "set nobackup       
