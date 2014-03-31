@@ -1,0 +1,13 @@
+#!/bin/bash
+# TODO:
+# - add auto-zip option
+# - clean up zip files
+# - show rsync's verbose output
+
+if [[ $# -eq 0 ]] ; then
+	echo "Usage: `basename $0` <filename>"
+	exit 1
+fi
+
+rsync -var "$@" mfrawley@treasure.mikefrawley.com:/www/treasure
+

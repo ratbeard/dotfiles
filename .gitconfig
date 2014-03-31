@@ -1,4 +1,54 @@
+[core]
+        editor = vim
+        excludesfile = ~/.gitignore
+		attributesfile = ~/.gitattributes
+		
+		# Treat spaces before tabs and all kinds of trailing whitespace as an error.
+		# [default] trailing-space: looks for spaces at the end of a line
+		# [default] space-before-tab: looks for spaces before tabs at the beginning of
+		# a line
+		whitespace = space-before-tab,-indent-with-non-tab,trailing-space
+		
+		# Make `git rebase` safer on OS X
+		# More info: <http://www.git-tower.com/blog/make-git-rebase-safe-on-osx/>
+		trustctime = false
+[color]
+        diff = auto
+        status = auto
+        branch = auto
+        ui = true		
+[apply]
+        whitespace = nowarn
+[mergetool]
+        keepBackup = false
+[difftool]
+        prompt = false
+[help]
+        autocorrect = 1
+[push]
+        # See `git help config` (search for push.default)
+        # for more information on different options of the below setting.
+        #
+        # Setting to git 2.0 default to surpress warning message
+        default = simple
+[github]
+		user = ratbeard
+[hub]
+        protocol = ssh
+[user]
+        name = Mike Frawley
+        email = frawl021@gmail.com
+[credential]
+        helper = osxkeychain
+
+
 [alias]
+    co = checkout
+    promote = !$ZSH/bin/git-promote
+    wtf     = !$ZSH/bin/git-wtf
+    rank-contributers = !$ZSH/bin/git-rank-contributers
+    count   = !git shortlog -sn
+
 	# View abbreviated SHA, description, and history graph of the latest 20 commits
 	l = log --pretty=oneline -n 20 --graph --abbrev-commit
 	# View the current working tree status using the short format
@@ -38,19 +88,6 @@
 	# Detect whitespace errors when applying a patch
 	whitespace = fix
 
-[core]
-	# Use custom `.gitignore` and `.gitattributes`
-	excludesfile = ~/.gitignore
-	attributesfile = ~/.gitattributes
-	# Treat spaces before tabs and all kinds of trailing whitespace as an error.
-	# [default] trailing-space: looks for spaces at the end of a line
-	# [default] space-before-tab: looks for spaces before tabs at the beginning of
-	# a line
-	whitespace = space-before-tab,-indent-with-non-tab,trailing-space
-	# Make `git rebase` safer on OS X
-	# More info: <http://www.git-tower.com/blog/make-git-rebase-safe-on-osx/>
-	trustctime = false
-
 [color]
 	# Use colors in Git commands that are capable of colored output when
 	# outputting to the terminal. (This is the default setting in Git ≥ 1.8.4.)
@@ -88,3 +125,10 @@
 
 [push]
 	default = matching
+
+
+
+
+
+
+

@@ -1,10 +1,222 @@
-# Easier navigation: .., ..., ...., ....., ~ and -
+
+#
+# Path
+#
+# Default $PATH: `/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/opt/X11/bin`
+# $path is a zsh array and easier to work with.
+path=(
+	# Local directories
+	./bin
+	node_modules/.bin
+
+	# my scripts
+	$HOME/.dotfiles/bin
+
+	# ruby
+	$HOME/.rbenv/bin
+	$HOME/.rbenv/shims
+
+	# node
+	/usr/local/share/npm/bin
+
+	# homebrew
+	/usr/local/bin
+	/usr/local/sbin
+
+	# heroku toolbelt
+	/usr/local/heroku/bin
+
+	$path
+)
+
+# Rbenv
+if which rbenv > /dev/null; then eval "$(rbenv init -)"; fi
+
+export MANPATH="/usr/local/man:/usr/local/mysql/man:/usr/local/git/man:$MANPATH"
+
+
+
+
+#
+# Navigation
+#
 alias ..="cd .."
 alias ...="cd ../.."
 alias ....="cd ../../.."
 alias .....="cd ../../../.."
-alias ~="cd ~" # `cd` is probably faster to type though
-alias -- -="cd -"
+function o() { open ${1:-./} }
+function m() { $EDITOR ${1:-./} }
+
+# Tier 2
+function cdl { cd $1; ls; }
+alias here="pwd | tr '\n' ' '| pbcopy"
+alias goto='cd `pbpaste`' 
+alias cpy="pbcopy"
+alias pst="pbpaste"
+
+# Tier 3
+alias myip="ifconfig en0 | grep "inet" | grep -v inet6 | sed 's/.*inet \([0-9]*\.[0-9]*\.[0-9]*\.[0-9]*\).*$/\1/'"
+alias apache-edit="sudo open /etc/apache2/httpd.conf"
+alias apache-restart="sudo /usr/sbin/apachectl restart"
+
+
+
+# Create a new shell script
+new-script() { 
+  echo "#!/bin/bash" > $1
+  chmod +x $1 
+}
+
+
+# grc overides for ls
+#   Made possible through contributions from generous benefactors like
+#   `brew install coreutils`
+if $(gls &>/dev/null)
+then
+  alias ls="gls -F --color"
+  alias l="gls -lAh --color"
+  alias ll="gls -l --color"
+  alias la='gls -A --color'
+fi
+
+
+
+#
+# Git
+#
+
+# Use `hub` as our git wrapper:
+#   http://defunkt.github.com/hub/
+hub_path=$(which hub)
+if (( $+commands[hub] )); then
+  alias git=$hub_path
+fi
+
+alias g='git'
+alias clone="git clone"
+
+# Viewing
+alias gl="git log"
+alias gll="git log --graph --pretty=format:'%Cred%h%Creset %an: %s - %Creset %C(yellow)%d%Creset %Cgreen(%cr)%Creset' --abbrev-commit --date=relative"
+alias glp="git log -p"
+alias gs='git status -sb' # upgrade your git if -sb breaks for you. it's fun.
+# alias grm="git status | grep deleted | awk '{\$1=\$2=\"\"; print \$0}' | \
+           # perl -pe 's/^[ \t]*//' | sed 's/ /\\\\ /g' | xargs git rm"
+alias gd='git diff'
+alias gdc='git diff --cached'
+
+# Commiting
+function ga() { git add ${1:-./} }
+alias gA="git add -A :/"
+alias gap="git add -p"
+alias gc='git commit'
+alias gca='git commit -a'
+
+# Branches
+alias gco='git checkout'
+alias gb='git branch'
+alias gbn='git checkout -b'
+
+# Remotes
+# alias gp='git push origin HEAD'
+# alias gl='git pull --prune'
+
+# Git svn
+alias gsr="git svn rebase"
+alias gsd="git svn dcommit"
+
+
+
+#
+# Ruby
+#
+alias rb='rbenv local 1.8.7-p358'
+alias be="bundle exec"
+alias migrate='bundle exec rake db:migrate db:test:clone'
+alias seed="bundle exec rake db:seed"
+
+# rehash shims
+#rbenv rehash 2>/dev/null
+
+# shell thing
+rbenv() {
+  command="$1"
+  if [ "$#" -gt 0 ]; then
+    shift
+  fi
+
+  case "$command" in
+  shell)
+    eval `rbenv "sh-$command" "$@"`;;
+  *)
+    command rbenv "$command" "$@";;
+  esac
+}
+
+
+#
+# tmux
+#
+function tm() {
+	[[ -z "$1" ]] && { echo "usage: tm <session>" >&2; return 1; }
+	tmux has -t $1 && tmux attach -t $1 || tmux new -s $1
+}
+
+function __tmux-sessions() {
+ local expl
+ local -a sessions
+ sessions=( ${${(f)"$(command tmux list-sessions)"}/:[ $'\t']##/:} )
+ _describe -t sessions 'sessions' sessions "$@"
+}
+#compdef __tmux-sessions tm
+
+
+
+#
+# Svn
+#
+alias svns="svn st"
+alias svnu="svn up"
+alias svnkill="find . -name .svn -print0 | xargs -0 rm -rf"
+
+# Show last log entries, default 5
+function svnl () {
+  svn log -l ${1:-5}
+}
+# Color diffs for SVN, http://www.zalas.eu/viewing-svn-diff-result-in-colors
+function svnd () {
+  svn diff "${@}" | colordiff | less -R;
+}
+
+# Pipe diff to mate
+function svndm () {
+  if [ "$1" != "" ]; then
+    svn diff $@ | mate;
+  else
+    svn diff | mate;
+  fi
+}
+
+
+
+#
+# misc
+#
+# Export on mac, not linux laptop
+if [[ -d  "/Library/Java/JavaVirtualMachines/jdk1.7.0_25.jdk/Contents/Home" ]]; then
+	export JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk1.7.0_25.jdk/Contents/Home
+fi
+
+# GRC colorizes nifty unix tools all over the place
+if $(grc &>/dev/null) && ! $(brew &>/dev/null)
+then
+  source `brew --prefix`/etc/grc.bashrc
+fi
+
+# Pipe public key to my clipboard
+alias pubkey="more ~/.ssh/id_dsa.public | pbcopy | echo '=> Public key copied to pasteboard.'"
+
+
 
 # Shortcuts
 alias d="cd ~/Documents/Dropbox"
@@ -59,7 +271,7 @@ alias ips="ifconfig -a | grep -o 'inet6\? \(addr:\)\?\s\?\(\(\([0-9]\+\.\)\{3\}[
 alias whois="whois -h whois-servers.net"
 
 # Flush Directory Service cache
-alias flush="dscacheutil -flushcache && killall -HUP mDNSResponder"
+alias dnsflush="dscacheutil -flushcache && killall -HUP mDNSResponder"
 
 # Clean up LaunchServices to remove duplicates in the “Open With” menu
 alias lscleanup="/System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister -kill -r -domain local -domain system -domain user && killall Finder"
@@ -149,6 +361,3 @@ alias afk="/System/Library/CoreServices/Menu\ Extras/User.menu/Contents/Resource
 
 # Reload the shell (i.e. invoke as a login shell)
 alias reload="exec $SHELL -l"
-
-# Faster npm for europeans
-command -v npm > /dev/null && alias npme="npm --registry http://registry.npmjs.eu"

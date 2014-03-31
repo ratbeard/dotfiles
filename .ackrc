@@ -1,0 +1,64 @@
+# This file should be at: ~/.ackrc
+#
+# ====
+# Tipz
+# ====
+# !!! ACK ONLY SEARCHES FILE TYPES IT KNOWS ABOUT !!!
+#
+# To search ALL file types, use:
+#
+#    ack -a pattern
+# 
+# To see all the files that will be searched:
+#
+#    ack -f
+#
+# Only search in the given subdirectory as second parameter:
+#
+#   ack '<div id=' views
+#   ack '<div id=' {views,layouts}
+#
+# Match only whole words:
+#
+#   ack -w utility_nav    # doesn't match 'utility_nav_holder'
+#
+
+
+# ==============
+# Add File types
+# ==============
+
+# Ruby
+--type-add=ruby=.rake,.builder
+--type-set=cucumber=.feature
+
+# Dotnet
+--type-add=html=.cshtml,.aspx
+--type-add=xml=.csproj
+
+# JS
+--type-set=coffee=.coffee
+--type-add=js=.js.erb,.jst
+
+# CSS
+--type-add=css=.sass,.less,.scss
+
+# Text files
+--type-set=markdown=.markdown,.md
+--type-set=asciidoc=.asc
+
+# Html
+--type-add=html=.jade,.erb,.html,.slim
+
+
+# ===================
+# Additional Settings
+# ===================
+
+# Ignore directories
+--ignore-dir=vendor
+--ignore-dir=log
+--ignore-dir=tmp
+--ignore-dir=build
+--ignore-dir=js/generated
+--ignore-dir=node_modules
