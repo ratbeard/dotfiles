@@ -2,7 +2,7 @@
 set -e
 echo ''
 
-DOTFILES_ROOT="/Users/mfrawley/dotfiles-1"
+DOTFILES_ROOT="/Users/mfrawley/code/dotfiles"
 
 info () {
   printf "  [ \033[00;34m..\033[0m ] $1"
