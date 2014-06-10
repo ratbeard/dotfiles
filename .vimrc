@@ -4,7 +4,7 @@ let mapleader = ","
 " Bundles
 "
 filetype off
-set rtp+=~/.vim/bundle/vundle/
+set rtp+=~/.vim/bundle/Vundle/
 call vundle#rc()
 "Bundle 'gmarik/vundle'
 
@@ -93,7 +93,7 @@ set modelines=0
 set ruler                                    " show position in file   
 set number                                   " show line numbers  
 set ttyfast                                  " Optimize for fast terminal connections
-set encoding=utf-8 nobomb          " Use UTF-8 without BOM
+set encoding=utf-8 nobomb         			" Use UTF-8 without BOM
 set history=1000                             " limit :cmdline history   
 set noeb vb t_vb=                            " no error bells
 set nowrap                                   " no carriage returns
@@ -107,7 +107,7 @@ set autoindent                               " auto indents the next new line
 set timeoutlen=500                           " shortens the lag time with using leader
 set smartindent
 set title
-"set expandtab                                " Turn tabs into spaces
+set expandtab                                " Turn tabs into spaces
 set lz                                       " when macros are running don't redraw
 set backspace=start,indent
 set virtualedit=all
@@ -123,11 +123,11 @@ set hidden                                   " move to buffer without saving cur
 set clipboard+=unnamed                       " use system clipboard
 set shortmess=atI                            " skip intro message
 set backupdir=~/.vim/backups                 " Centralize backups, swapfiles and undo history
-set directory=~/.vim/swaps
+"set directory=~/.vim/swaps
 set undodir=~/.vim/undo
 "set nobackup       
 "set nowritebackup  
-"set noswapfile     
+set noswapfile     
 
 set numberwidth=2                            " set the number width spacing
 set dictionary=/usr/share/dict/words         " more words
