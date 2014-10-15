@@ -14,6 +14,7 @@ path=(
 	$path
 )
 export MANPATH="/usr/local/man:/usr/local/mysql/man:/usr/local/git/man:$MANPATH"
+export FIREFOX_BIN="/opt/homebrew-cask/Caskroom/firefox/latest/Firefox.app/Contents/MacOS/firefox"
 
 # Rbenv
 if which rbenv > /dev/null; then
@@ -125,19 +126,20 @@ alias g='git'
 alias clone="git clone"
 
 # Viewing
-alias gl="git log"
+alias gl="clear && git log"
 alias gll="git log --graph --pretty=format:'%Cred%h%Creset %an: %s - %Creset %C(yellow)%d%Creset %Cgreen(%cr)%Creset' --abbrev-commit --date=relative"
 alias glp="git log -p"
-alias gs='git status -sb' # upgrade your git if -sb breaks for you. it's fun.
+alias gs='git status -sb'
+alias ggs="clear && git status -sb"
 # alias grm="git status | grep deleted | awk '{\$1=\$2=\"\"; print \$0}' | \
            # perl -pe 's/^[ \t]*//' | sed 's/ /\\\\ /g' | xargs git rm"
-alias gd='git diff'
+alias gd='clear && git diff'
 alias gdc='git diff --cached'
 
 # Commiting
 function ga() { git add ${1:-./} }
 alias gA="git add -A :/"
-alias gap="git add -p"
+alias gap="clear; git add -p"
 alias gc='git commit'
 alias gca='git commit -a'
 
@@ -431,3 +433,6 @@ function fs() {
 
 
 export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
+
+# added by travis gem
+[ -f /Users/mfrawley/.travis/travis.sh ] && source /Users/mfrawley/.travis/travis.sh

@@ -62,3 +62,4 @@
 --ignore-dir=build
 --ignore-dir=js/generated
 --ignore-dir=node_modules
+--ignore-dir=spec/coverage
