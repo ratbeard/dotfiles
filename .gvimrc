@@ -4,3 +4,9 @@ colorscheme railscat
 set guifont=Menlo:h14
 " Better line-height
 set linespace=8
+
+if has("gui_macvim")
+  " command+w closes the whole tab, not 1 pane
+  macmenu &File.Close key=<nop>
+  map <D-w> :tabc<CR>
+endif

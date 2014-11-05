@@ -279,13 +279,13 @@ nnoremap <silent> <leader>C :let _s=@/<Bar>:%s/\s\+$//e<Bar>:let @/=_s<Bar>:nohl
 " Edit config files
 function! MyConfigurationFiles()
   execute ":e ~/.dotfiles/vim/vimrc.symlink"
-  "execute ":vsplit ~/.gvimrc"
+  execute ":vsplit ~/.gvimrc"
   execute ":vsplit ~/.dotfiles/"
 endfunction
 map <leader>e :call MyConfigurationFiles()<CR>
 
 " Source vimrc
-nmap <silent> <leader>r :so $MYVIMRC<CR>
+nmap <silent> <leader>r :so $MYVIMRC<CR>:so $MYGVIMRC<CR>
 
 " Underline the current line with '='
 nmap <silent> ,U :t.\|s/./=/g\|set nohls<cr>
