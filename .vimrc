@@ -1,11 +1,9 @@
-"set shell=bash
 set nocompatible
 let mapleader = ","
 "
 " Bundles
 "
-" TODO - https://github.com/junegunn/vim-plug
-filetype off
+" https://github.com/junegunn/vim-plug
 call plug#begin('~/.vim/plugged')
 
 " Ack
@@ -13,13 +11,18 @@ call plug#begin('~/.vim/plugged')
 " v - open result in vertical split
 Plug 'mileszs/ack.vim'
 
-let g:ack_wildignore = 0
+" Adds :Qargs and :Qdo command to act on matches in quickfix list (used by :Ack)
+Plug 'henrik/vim-qargs'
+
+let g:ack_default_options = " -s -H --nocolor --nogroup --column --smart-case --follow"
 let g:ack_wildignore = 0
 let g:ack_mappings = { "o": "<CR>zz" }
 let g:ack_mappings = { "<C-V>": "<C-W><CR><C-W>H<C-W>b<C-W>J<C-W>t" }
 let g:ackhighlight = 1 
 nnoremap <leader>a :Ack!<Space>
 
+Plug 'junegunn/limelight.vim'
+"Plug 'junegunn/vim-emoji'
 
 " Ctrl-P 
 " https://github.com/kien/ctrlp.vim
@@ -77,6 +80,7 @@ Plug 'digitaltoad/vim-jade'
 Plug 'MarcWeber/vim-addon-mw-utils'
 Plug 'tomtom/tlib_vim'
 Plug 'garbas/vim-snipmate'
+call plug#end()
 "Plug 'file:///Users/mfrawley/dotfiles-1/.vim/snippets'
 au! BufWritePost *.snippet call ReloadAllSnippets()
 
@@ -177,7 +181,7 @@ cnoremap <ESC><C-H> <C-W>
 "
 if has("gui_running")
   syntax on
-  colorscheme fruity
+  "colorscheme fruity
   "colorscheme lucius
   "colorscheme desertEx
   set guioptions=egmtc 
@@ -200,6 +204,8 @@ if has("gui_running")
   " Start without the toolbar
   set guioptions-=T
 endif
+
+
 
 
 "
@@ -244,6 +250,20 @@ nmap Q gqap
 nnoremap j gj
 nnoremap k gk
 
+" https://github.com/junegunn/dotfiles/blob/master/vimrc#L359-L363
+" Movement in insert mode
+inoremap <C-h> <C-o>h
+inoremap <C-l> <C-o>a
+inoremap <C-j> <C-o>j
+inoremap <C-k> <C-o>k
+
+" ----------------------------------------------------------------------------
+" <tab> / <s-tab> | Circular windows navigation
+" ----------------------------------------------------------------------------
+nnoremap <tab>   <c-w>w
+nnoremap <S-tab> <c-w>W
+
+
 " Easy window navigation
 "map <C-h> <C-w>h
 "map <C-j> <C-w>j
@@ -276,6 +296,24 @@ vmap <leader>* :<C-u>call <SID>VSetSearch()<CR>:execute 'noautocmd vimgrep /' . 
 
 " Run shell command and insert output in new scratch buffer.  E.g: :R ack icon- html
 :command! -nargs=* -complete=shellcmd R new | setlocal buftype=nofile bufhidden=hide noswapfile | r !<args>
+
+
+
+" ----------------------------------------------------------------------------
+" :Root | Change directory to the root of the Git repository
+" ----------------------------------------------------------------------------
+function! s:root()
+  let me = expand('%:p:h')
+  let gitd = finddir('.git', me.';')
+  if empty(gitd)
+    echo "Not in git repo"
+  else
+    let gitp = fnamemodify(gitd, ':h')
+    echo "Change directory to: ".gitp
+    execute 'lcd' gitp
+  endif
+endfunction
+command! Root call s:root()
 
 
 " add '-' to list of word seperator characters

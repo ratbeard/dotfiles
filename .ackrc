@@ -23,6 +23,11 @@
 #   ack -w utility_nav    # doesn't match 'utility_nav_holder'
 #
 
+# Follow symbolic links
+--follow
+
+# Searching is case-insensitive, unless you include a capital letter
+--smart-case
 
 # ==============
 # Add File types

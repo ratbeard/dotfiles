@@ -95,6 +95,12 @@
   # Remove branches that have already been merged with master
   dm = "!git branch --merged | grep -v '\\*' | xargs -n 1 git branch -d"
 
+  # Fetch latest and prints the branch name with the most recent commit
+  br = "!git fetch && git for-each-ref --count=1 --sort=-committerdate refs/remotes/ --format='%(refname:short)' | sed -e \"s/^.*\\///\""
+
+  # Switch to branch with most recent commit
+  cor = "!git checkout `git br`"
+
 [apply]
   # Detect whitespace errors when applying a patch
   whitespace = fix
