@@ -124,6 +124,7 @@ fi
 
 alias g='git'
 alias clone="git clone"
+alias push="git push -u origin head"
 
 # Viewing
 alias gl="clear && git log"
@@ -163,7 +164,7 @@ alias gsd="git svn dcommit"
 #
 alias rb='rbenv local 1.8.7-p358'
 alias be="bundle exec"
-alias migrate='bundle exec rake db:migrate db:test:clone'
+alias migrate='bundle exec rake db:migrate'
 alias seed="bundle exec rake db:seed"
 
 # rehash shims
@@ -275,7 +276,7 @@ setopt COMPLETE_IN_WORD
 setopt IGNORE_EOF
 setopt AUTOPUSHD PUSHDMINUS PUSHDSILENT PUSHDTOHOME
 setopt MARK_DIRS		# append a / to dir names
-setopt complete_aliases # don't expand aliases _before_ completion has finished
+#setopt complete_aliases # don't expand aliases _before_ completion has finished
 zle -N newtab
 zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}' # matches case insensitive for lowercase
 zstyle ':completion:*' insert-tab pending # pasting with tabs doesn't perform completion
@@ -434,5 +435,12 @@ function fs() {
 
 export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
 
+# Get gulp autocomplete
+eval "$(gulp --completion=zsh)"
+
 # added by travis gem
 [ -f /Users/mfrawley/.travis/travis.sh ] && source /Users/mfrawley/.travis/travis.sh
+
+# This loads nvm
+export NVM_DIR="/Users/mfrawley/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"

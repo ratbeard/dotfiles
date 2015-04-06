@@ -36,7 +36,7 @@ nnoremap <leader>t :CtrlP<CR>
 let g:ctrlp_match_window = 'bottom,order:ttb,min:1,max:15,results:15' " Display options
 let g:ctrlp_switch_buffer = '0'       " turn off jump to already open file
 let g:ctrlp_root_markers = ['.ctrlp'] " Sets working dir relative to a .git, or a .ctrlp
-let g:ctrlp_custom_ignore = { 'dir': 'node_modules\|build\|spec/coverage' } 
+let g:ctrlp_custom_ignore = { 'dir': 'node_modules\|bower_components\|dist\|build\|coverage' }
 
 " NERDTree
 Plug 'scrooloose/nerdtree'
@@ -92,9 +92,9 @@ syntax enable
 " File Aliases
 "
 autocmd BufRead,BufNewFile *.{ru,thor} set ft=ruby
+autocmd BufRead,BufNewFile *.{esnext} set ft=javascript
 "au BufRead,BufNewFile *.{html,aspx,master} set ft=html syntax=html5
 "au BufRead,BufNewFile *.{cshtml} set ft=html syntax=cshtml
-
 
 "
 " Settings

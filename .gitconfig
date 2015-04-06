@@ -101,6 +101,9 @@
   # Switch to branch with most recent commit
   cor = "!git checkout `git br`"
 
+  # Make local mirrors of all remote branches.  Useful after a fresh clone.
+  clone-branches = "! git branch -a | sed -n \"/\\/HEAD /d; /\\/master$/d; /remotes/p;\" | xargs -L1 git checkout -t"
+
 [apply]
   # Detect whitespace errors when applying a patch
   whitespace = fix
