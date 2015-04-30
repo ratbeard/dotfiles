@@ -21,6 +21,7 @@ let g:ack_mappings = { "<C-V>": "<C-W><CR><C-W>H<C-W>b<C-W>J<C-W>t" }
 let g:ackhighlight = 1 
 nnoremap <leader>a :Ack!<Space>
 
+Plug 'othree/yajs.vim'
 Plug 'junegunn/limelight.vim'
 "Plug 'junegunn/vim-emoji'
 
@@ -92,7 +93,7 @@ syntax enable
 " File Aliases
 "
 autocmd BufRead,BufNewFile *.{ru,thor} set ft=ruby
-autocmd BufRead,BufNewFile *.{esnext} set ft=javascript
+autocmd BufRead,BufNewFile *.{esnext,es6} set ft=javascript
 "au BufRead,BufNewFile *.{html,aspx,master} set ft=html syntax=html5
 "au BufRead,BufNewFile *.{cshtml} set ft=html syntax=cshtml
 

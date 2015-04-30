@@ -64,7 +64,9 @@
 --ignore-dir=vendor
 --ignore-dir=log
 --ignore-dir=tmp
---ignore-dir=build
---ignore-dir=js/generated
+--ignore-dir=bower_components
 --ignore-dir=node_modules
+--ignore-dir=coverage
 --ignore-dir=spec/coverage
+--ignore-dir=build
+--ignore-dir=dist
