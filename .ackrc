@@ -23,6 +23,11 @@
 #   ack -w utility_nav    # doesn't match 'utility_nav_holder'
 #
 
+# Follow symbolic links
+--follow
+
+# Searching is case-insensitive, unless you include a capital letter
+--smart-case
 
 # ==============
 # Add File types
@@ -59,8 +64,15 @@
 --ignore-dir=vendor
 --ignore-dir=log
 --ignore-dir=tmp
+--ignore-dir=bower_components
+--ignore-dir=node_modules
+--ignore-dir=coverage
+--ignore-dir=spec/coverage
 --ignore-dir=build
 --ignore-dir=dist
+<<<<<<< HEAD
 --ignore-dir=bower_components
 --ignore-dir=js/generated
 --ignore-dir=node_modules
+=======
+>>>>>>> 05791a7291955a6ae1d4f3ddc5134ac88bbba952

@@ -1,0 +1,16 @@
+for attr in $(seq 0 4); do
+  echo
+  for fg in $(seq 30 37); do
+    for bg in $(seq 40 47); do
+      printf "\033[$attr;${bg};${fg}m$attr;$fg;$bg\033[m "
+    done
+    echo
+  done
+done
+
+echo
+echo "Basic: foreground"
+echo 'echo -e "\\033[31m Then your text \\033[m"'
+echo
+echo "Advanced: modifier;background;foreground"
+echo 'echo -e "\\033[1;31;40m Then your text \\033[m"'

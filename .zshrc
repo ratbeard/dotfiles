@@ -16,6 +16,7 @@ path=(
   $path
 )
 export MANPATH="/usr/local/man:/usr/local/mysql/man:/usr/local/git/man:$MANPATH"
+export FIREFOX_BIN="/opt/homebrew-cask/Caskroom/firefox/latest/Firefox.app/Contents/MacOS/firefox"
 
 # Rbenv
 if which rbenv > /dev/null; then
@@ -125,21 +126,23 @@ fi
 
 alias g='git'
 alias clone="git clone"
+alias push="git push -u origin head"
 
 # Viewing
-alias gl="git log"
+alias gl="clear && git log"
 alias gll="git log --graph --pretty=format:'%Cred%h%Creset %an: %s - %Creset %C(yellow)%d%Creset %Cgreen(%cr)%Creset' --abbrev-commit --date=relative"
 alias glp="git log -p"
-alias gs='git status -sb' # upgrade your git if -sb breaks for you. it's fun.
+alias gs='git status -sb'
+alias ggs="clear && git status -sb"
 # alias grm="git status | grep deleted | awk '{\$1=\$2=\"\"; print \$0}' | \
            # perl -pe 's/^[ \t]*//' | sed 's/ /\\\\ /g' | xargs git rm"
-alias gd='git diff'
+alias gd='clear && git diff'
 alias gdc='git diff --cached'
 
 # Commiting
 function ga() { git add ${@:-./} }
 alias gA="git add -A :/"
-alias gap="git add -p"
+alias gap="clear; git add -p"
 alias gc='git commit'
 alias gca='git commit -a'
 
@@ -163,7 +166,7 @@ alias gsd="git svn dcommit"
 #
 alias rb='rbenv local 1.8.7-p358'
 alias be="bundle exec"
-alias migrate='bundle exec rake db:migrate db:test:clone'
+alias migrate='bundle exec rake db:migrate'
 alias seed="bundle exec rake db:seed"
 
 # rehash shims
@@ -276,7 +279,7 @@ setopt COMPLETE_IN_WORD
 setopt IGNORE_EOF
 setopt AUTOPUSHD PUSHDMINUS PUSHDSILENT PUSHDTOHOME
 setopt MARK_DIRS    # append a / to dir names
-setopt complete_aliases # don't expand aliases _before_ completion has finished
+#setopt complete_aliases # don't expand aliases _before_ completion has finished
 zle -N newtab
 zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}' # matches case insensitive for lowercase
 zstyle ':completion:*' insert-tab pending # pasting with tabs doesn't perform completion
@@ -440,3 +443,15 @@ function fs() {
   fi
 }
 
+
+export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
+
+# Get gulp autocomplete
+eval "$(gulp --completion=zsh)"
+
+# added by travis gem
+[ -f /Users/mfrawley/.travis/travis.sh ] && source /Users/mfrawley/.travis/travis.sh
+
+# This loads nvm
+export NVM_DIR="/Users/mfrawley/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
