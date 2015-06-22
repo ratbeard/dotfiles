@@ -60,5 +60,7 @@
 --ignore-dir=log
 --ignore-dir=tmp
 --ignore-dir=build
+--ignore-dir=dist
+--ignore-dir=bower_components
 --ignore-dir=js/generated
 --ignore-dir=node_modules

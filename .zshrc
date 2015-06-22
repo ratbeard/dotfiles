@@ -5,19 +5,21 @@ export PROJECTS=~/code
 # Path
 #
 path=(
-	./bin
-	node_modules/.bin
-	$HOME/.dotfiles/bin
-	$HOME/.rbenv/shims
-	/usr/local/bin
-	/usr/local/sbin
-	$path
+  ./bin
+  node_modules/.bin
+  $HOME/repos/chrome/depot_tools
+  $HOME/bin
+  $HOME/.node/bin
+  $HOME/.rbenv/shims
+  /usr/local/bin
+  /usr/local/sbin
+  $path
 )
 export MANPATH="/usr/local/man:/usr/local/mysql/man:/usr/local/git/man:$MANPATH"
 
 # Rbenv
 if which rbenv > /dev/null; then
-	eval "$(rbenv init -)"
+  eval "$(rbenv init -)"
 fi
 
 #
@@ -100,7 +102,7 @@ alias reload="exec $SHELL -l"
 new-script() { 
   echo "#!/bin/bash" > $1
   chmod +x $1 
-	$EDITOR $1
+  $EDITOR $1
 }
 
 # GRC colorizes unix tools
@@ -135,7 +137,7 @@ alias gd='git diff'
 alias gdc='git diff --cached'
 
 # Commiting
-function ga() { git add ${1:-./} }
+function ga() { git add ${@:-./} }
 alias gA="git add -A :/"
 alias gap="git add -p"
 alias gc='git commit'
@@ -187,8 +189,8 @@ rbenv() {
 # tmux
 #
 function tm() {
-	[[ -z "$1" ]] && { echo "usage: tm <session>" >&2; return 1; }
-	tmux has -t $1 && tmux attach -t $1 || tmux new -s $1
+  [[ -z "$1" ]] && { echo "usage: tm <session>" >&2; return 1; }
+  tmux has -t $1 && tmux attach -t $1 || tmux new -s $1
 }
 
 function __tmux-sessions() {
@@ -241,11 +243,12 @@ compinit
 #
 # Zsh Config
 #
-if [[ -n $SSH_CONNECTION ]]; then
-  export PS1='%m:%3~$(git_info_for_prompt)%# '
-else
-  export PS1='%3~$(git_info_for_prompt)%# '
-fi
+# PROMPT variable is used below...
+#if [[ -n $SSH_CONNECTION ]]; then
+  #export PS1='%m:%3~$(git_info_for_prompt)%# '
+#else
+  #export PS1='%3~$(git_info_for_prompt)%# '
+#fi
 
 export LSCOLORS="exfxcxdxbxegedabagacad"
 export CLICOLOR=true
@@ -272,7 +275,7 @@ setopt PROMPT_SUBST
 setopt COMPLETE_IN_WORD
 setopt IGNORE_EOF
 setopt AUTOPUSHD PUSHDMINUS PUSHDSILENT PUSHDTOHOME
-setopt MARK_DIRS		# append a / to dir names
+setopt MARK_DIRS    # append a / to dir names
 setopt complete_aliases # don't expand aliases _before_ completion has finished
 zle -N newtab
 zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}' # matches case insensitive for lowercase
@@ -288,8 +291,8 @@ export MANPAGER="less -X" # Don’t clear the screen after quitting a manual pag
 #  add ctrl+a, ctrl+e and other basics
 #
 # To read: 
-# 	http://dougblack.io/words/zsh-vi-mode.html
-# 	man zshzle
+#   http://dougblack.io/words/zsh-vi-mode.html
+#   man zshzle
 bindkey -v
 bindkey "^R" history-incremental-search-backward
 bindkey '^[^[[D' backward-word
@@ -307,12 +310,11 @@ bindkey '^?' backward-delete-char
 autoload colors && colors
 # http://github.com/ehrenmurdick/config/blob/master/zsh/prompt.zsh
 
-if (( $+commands[git] ))
-then
+if (( $+commands[git] )); then
   git="$commands[git]"
 else
   git="/usr/bin/git"
-	echo 'using basic git?'
+  echo 'using basic git?'
 fi
 
 git_branch() {
@@ -353,17 +355,17 @@ need_push () {
   fi
 }
 
-#ruby_version() {
-  #if (( $+commands[rbenv] ))
-  #then
-    #echo "$(rbenv version | awk '{print $1}')"
-  #fi
+ruby_version() {
+  if (( $+commands[rbenv] ))
+  then
+    echo "$(rbenv version | awk '{print $1}')"
+  fi
 
-  #if (( $+commands[rvm-prompt] ))
-  #then
-    #echo "$(rvm-prompt | awk '{print $1}')"
-  #fi
-#}
+  if (( $+commands[rvm-prompt] ))
+  then
+    echo "$(rvm-prompt | awk '{print $1}')"
+  fi
+}
 
 #rb_prompt() {
   #if ! [[ -z "$(ruby_version)" ]]
@@ -378,16 +380,25 @@ directory_name() {
   echo "%{$fg_bold[cyan]%}%1/%\/%{$reset_color%}"
 }
 
-export PROMPT=$'\n$(directory_name) $(git_dirty)$(need_push)\n› '
+heroku_info() {
+  if [ -n "${HEROKU_APP+x}" ]; then
+    echo "☁️  $HEROKU_APP"
+  fi
+}
+
+#
+# Prompt
+#
+export PROMPT=$'\n$(directory_name) $(git_dirty)$(need_push) 💎  $(ruby_version)  $(heroku_info)\n› '
 set_prompt () {
   export RPROMPT="%{$fg_bold[cyan]%}%{$reset_color%}"
 }
 
 precmd() {
-	#title "zsh" "%m" "%55<...<%~"
+  #title "zsh" "%m" "%55<...<%~"
   #set_prompt
-	# Just the cwd
-	print -Pn "\e]2;%~\a"
+  # Just the cwd
+  print -Pn "\e]2;%~\a"
 }
 
 
@@ -417,15 +428,15 @@ function title() {
 #
 # Determine size of a file or total size of a directory
 function fs() {
-	if du -b /dev/null > /dev/null 2>&1; then
-		local arg=-sbh
-	else
-		local arg=-sh
-	fi
-	if [[ -n "$@" ]]; then
-		du $arg -- "$@"
-	else
-		du $arg .[^.]* *
-	fi
+  if du -b /dev/null > /dev/null 2>&1; then
+    local arg=-sbh
+  else
+    local arg=-sh
+  fi
+  if [[ -n "$@" ]]; then
+    du $arg -- "$@"
+  else
+    du $arg .[^.]* *
+  fi
 }
 

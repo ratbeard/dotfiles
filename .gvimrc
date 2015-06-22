@@ -4,3 +4,8 @@ colorscheme railscat
 set guifont=Menlo:h14
 " Better line-height
 set linespace=8
+
+if has("gui_macvim")
+  macmenu &File.Close key=<nop>
+  map <D-w> :tabclose<CR>
+endif

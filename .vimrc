@@ -13,6 +13,7 @@ call vundle#rc()
 " v - open result in vertical split
 let g:ack_wildignore = 0
 Bundle 'mileszs/ack.vim'
+nnoremap <leader>a :Ack!
 
 
 " Ctrl-P 
@@ -27,7 +28,7 @@ nnoremap <leader>t :CtrlP<CR>
 let g:ctrlp_match_window = 'bottom,order:ttb,min:1,max:15,results:15' " Display options
 let g:ctrlp_switch_buffer = '0'  			" turn off jump to already open file
 let g:ctrlp_root_markers = ['.ctrlp'] " Sets working dir relative to a .git, or a .ctrlp
-let g:ctrlp_custom_ignore = { 'dir': 'js/generated\|js/external*\|node_modules\|build' } 
+let g:ctrlp_custom_ignore = { 'dir': 'node_modules\|build\|tmp\|dist\|bower_components' }
 
 " NERDTree
 Bundle 'scrooloose/nerdtree'
@@ -89,6 +90,7 @@ autocmd BufRead,BufNewFile *.{ru,thor} set ft=ruby
 "
 " Settings
 "
+set iskeyword+=-
 set modelines=0
 set ruler                                    " show position in file   
 set number                                   " show line numbers  
@@ -107,7 +109,7 @@ set autoindent                               " auto indents the next new line
 set timeoutlen=500                           " shortens the lag time with using leader
 set smartindent
 set title
-"set expandtab                                " Turn tabs into spaces
+set expandtab                                " Turn tabs into spaces
 set lz                                       " when macros are running don't redraw
 set backspace=start,indent
 set virtualedit=all
@@ -123,7 +125,8 @@ set hidden                                   " move to buffer without saving cur
 set clipboard+=unnamed                       " use system clipboard
 set shortmess=atI                            " skip intro message
 set backupdir=~/.vim/backups                 " Centralize backups, swapfiles and undo history
-set directory=~/.vim/swaps
+set directory=/tmp
+"set directory=~/.vim/swaps
 set undodir=~/.vim/undo
 "set nobackup       
 "set nowritebackup  
@@ -177,7 +180,7 @@ if has("gui_running")
   set guioptions=egmtc 
   set showtabline=2                 "2 enables tabs
   set antialias   
-  set guifont=Inconsolata-dz\ For\ Powerline:h11
+  "set guifont=Inconsolata-dz\ For\ Powerline:h11
   set transp=0      
 
   " Saving puts you in normal mode
@@ -270,3 +273,17 @@ vmap <leader>* :<C-u>call <SID>VSetSearch()<CR>:execute 'noautocmd vimgrep /' . 
 
 " Run shell command and insert output in new scratch buffer.  E.g: :R ack icon- html
 :command! -nargs=* -complete=shellcmd R new | setlocal buftype=nofile bufhidden=hide noswapfile | r !<args>
+
+" Copy current file name (relative/absolute) to system clipboard
+" Source: http://stackoverflow.com/a/17096082
+" relative path (src/foo.txt)
+nnoremap <leader>cf :let @+=expand("%")<CR>
+
+" absolute path (/something/src/foo.txt)
+nnoremap <leader>cF :let @+=expand("%:p")<CR>
+
+" filename (foo.txt)
+nnoremap <leader>ct :let @+=expand("%:t")<CR>
+
+" directory name (/something/src)
+nnoremap <leader>ch :let @+=expand("%:p:h")<CR>
