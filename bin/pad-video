@@ -1,14 +1,15 @@
 #!/usr/bin/env bash
 #
-# This script creates a new video file by appending a random amount of
-# additional time to the end of the given video file.  This makes the outcome
-# of a tennis match much less predictable as you can't tell "the video ends in 
-# 20 minutes so it must not go into another set".
+# This script creates a video file by appending a random amount of additional
+# time to the end of a given video file.  This makes the outcome of a tennis
+# match less predictable as you can't say "hmm this video ends in 20 minutes so
+# this must be the final set".
 
 # It uses 'ffmpeg' to make a 10 second clip from the given video file and
 # then contatenates that clip a random amount of times to the end of the given
 # video file.  By making a clip from the video it ensures the container video
 # formats match (though a silent black frame would be preferred).
+
 max_minutes_of_padding=90
 
 set -e
