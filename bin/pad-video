@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 #
-# This script creates a video file by appending a random amount of additional
-# time to the end of a given video file.  This makes the outcome of a tennis
-# match less predictable as you can't say "hmm this video ends in 20 minutes so
-# this must be the final set".
+# This script takes in a video file and appends a random amount of time at the
+# end to output a new 'padded' video file.  This makes the outcome of a tennis
+# match less predictable as you can't see theres only 20 minutes left and know
+# there won't be another set.
 
 # It uses 'ffmpeg' to make a 10 second clip from the given video file and
 # then contatenates that clip a random amount of times to the end of the given
