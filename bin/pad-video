@@ -1,0 +1,80 @@
+#!/usr/bin/env bash
+#
+# This script creates a new video file by appending a random amount of
+# additional time to the end of the given video file.  This makes the outcome
+# of a tennis match much less predictable as you can't tell "the video ends in 
+# 20 minutes so it must not go into another set".
+
+# It uses 'ffmpeg' to make a 10 second clip from the given video file and
+# then contatenates that clip a random amount of times to the end of the given
+# video file.  By making a clip from the video it ensures the container video
+# formats match (though a silent black frame would be preferred).
+max_minutes_of_padding=90
+
+set -e
+#set -x
+
+if [[ $# -eq 0 ]] ; then
+  echo "Usage:
+    $(basename $0) <input.mkv>"
+  exit 1
+fi
+
+command -v ffmpeg >/dev/null 2>&1 || { echo "I require foo but it's not installed.  Aborting." >&2; exit 1; }
+
+get_abs_filename() {
+  # $1 : relative filename
+  echo "$(cd "$(dirname "$1")" && pwd)/$(basename "$1")"
+}
+
+in_fullpath=$(get_abs_filename "$1")
+# ffmpeg doesn't like back slashes (used when the file has spaces in it) in the
+# input or output file parameters.  We strip them out and make sure to always
+# quote the arguments instead.
+in_fullpath_without_backslash=${in_fullpath//\\/}
+in_filename=$(basename "$in_fullpath_without_backslash")
+extension="${in_filename##*.}"
+in_filename_no_extension="${in_filename%.*}"
+out_filename="$in_filename_no_extension-PADDED.$extension"
+
+work_dir=`mktemp -d 2>/dev/null || mktemp -d -t 'mytmpdir'`
+padding_clip_fullpath="$work_dir/padding-clip.$extension"
+playlist_fullpath="$work_dir/playlist.txt"
+echo "Making work directory: $work_dir"
+
+# Calculate a random number of times to append a 10 second padding clips
+number_of_padding_clips=$(( ($RANDOM % max_minutes_of_padding) * 60 / 10 ))
+
+# Make the 10 second padding clip
+echo "Making padding clip"
+ffmpeg \
+  -loglevel panic \
+  -y \
+  -i "$in_fullpath_without_backslash" \
+  -ss 0 \
+  -c copy \
+  -t 10 \
+  $padding_clip_fullpath
+
+# Make the playlist file
+echo "Making playlist file"
+echo "file '$in_fullpath'" >> $playlist_fullpath
+for ((i=0; i<=$number_of_padding_clips; i++)); do
+  printf "file '%s'\n" $padding_clip_fullpath >> $playlist_fullpath
+done
+
+# Add the padding clip many times to the end of the video
+echo "Making final video"
+ffmpeg \
+  -loglevel panic \
+  -y \
+  -f concat \
+  -i $playlist_fullpath \
+  -c copy "$out_filename"  \
+
+echo "Cleaning up working dir"
+rm -rf $work_dir
+
+echo "Wrote: $out_filename"
+exit 0
+
