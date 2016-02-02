@@ -18,6 +18,8 @@
   # [default] space-before-tab: looks for spaces before tabs at the beginning of
   # a line
   #whitespace = space-before-tab,-indent-with-non-tab,trailing-space
+  whitespace=-trailing-space,-blank-at-eol
+  #autocrlf=true
   # Make `git rebase` safer on OS X
   # More info: <http://www.git-tower.com/blog/make-git-rebase-safe-on-osx/>
   trustctime = false

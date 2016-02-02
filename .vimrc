@@ -28,7 +28,7 @@ nnoremap <leader>t :CtrlP<CR>
 let g:ctrlp_match_window = 'bottom,order:ttb,min:1,max:15,results:15' " Display options
 let g:ctrlp_switch_buffer = '0'  			" turn off jump to already open file
 let g:ctrlp_root_markers = ['.ctrlp'] " Sets working dir relative to a .git, or a .ctrlp
-let g:ctrlp_custom_ignore = { 'dir': 'node_modules\|build\|tmp\|dist\|bower_components' }
+let g:ctrlp_custom_ignore = { 'dir': 'node_modules\|build\|tmp\|dist\|bower_components\|public' }
 
 " NERDTree
 Bundle 'scrooloose/nerdtree'
@@ -67,6 +67,8 @@ Bundle 'slim-template/vim-slim'
 Bundle 'kchmck/vim-coffee-script.git'
 Bundle 'groenewege/vim-less'
 Bundle 'digitaltoad/vim-jade'
+Plugin 'pangloss/vim-javascript'
+Bundle 'mxw/vim-jsx'
 
 " Snippets
 Bundle 'MarcWeber/vim-addon-mw-utils'
@@ -287,3 +289,6 @@ nnoremap <leader>ct :let @+=expand("%:t")<CR>
 
 " directory name (/something/src)
 nnoremap <leader>ch :let @+=expand("%:p:h")<CR>
+
+" Turn off syntax highlighting in large files.  Source: http://stackoverflow.com/questions/178257/how-to-avoid-syntax-highlighting-for-large-files-in-vim
+autocmd BufWinEnter * if line2byte(line("$") + 1) > 1000000 | syntax clear | endif

@@ -6,13 +6,12 @@ export PROJECTS=~/code
 #
 path=(
   ./bin
-  node_modules/.bin
+  ./node_modules/.bin
   $HOME/repos/chrome/depot_tools
   $HOME/bin
   $HOME/.node/bin
   $HOME/.rbenv/shims
   /usr/local/bin
-  /usr/local/sbin
   $path
 )
 export MANPATH="/usr/local/man:/usr/local/mysql/man:/usr/local/git/man:$MANPATH"
@@ -139,6 +138,10 @@ alias ggs="clear && git status -sb"
 alias gd='clear && git diff'
 alias gdc='git diff --cached'
 
+# Stash
+alias stash='git stash'
+alias pop='git stash pop'
+
 # Commiting
 function ga() { git add ${@:-./} }
 alias gA="git add -A :/"
@@ -160,13 +163,12 @@ alias gsr="git svn rebase"
 alias gsd="git svn dcommit"
 
 
-
 #
 # Ruby
 #
-alias rb='rbenv local 1.8.7-p358'
 alias be="bundle exec"
 alias migrate='bundle exec rake db:migrate'
+alias rollback='bundle exec rake db:rollback'
 alias seed="bundle exec rake db:seed"
 
 # rehash shims

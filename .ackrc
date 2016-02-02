@@ -70,9 +70,8 @@
 --ignore-dir=spec/coverage
 --ignore-dir=build
 --ignore-dir=dist
-<<<<<<< HEAD
 --ignore-dir=bower_components
 --ignore-dir=js/generated
 --ignore-dir=node_modules
-=======
->>>>>>> 05791a7291955a6ae1d4f3ddc5134ac88bbba952
+--ignore-dir=public
+
