@@ -12,7 +12,7 @@
   excludesfile = ~/.gitignore
   attributesfile = ~/.gitattributes
   # Word highlighting in diffs
-  pager = `brew --prefix git`/share/git-core/contrib/diff-highlight/diff-highlight | less
+  #pager = `brew --prefix git`/share/git-core/contrib/diff-highlight/diff-highlight | less
   # Treat spaces before tabs and all kinds of trailing whitespace as an error.
   # [default] trailing-space: looks for spaces at the end of a line
   # [default] space-before-tab: looks for spaces before tabs at the beginning of
@@ -23,6 +23,7 @@
   # Make `git rebase` safer on OS X
   # More info: <http://www.git-tower.com/blog/make-git-rebase-safe-on-osx/>
   trustctime = false
+	pager = diff-so-fancy | less --tabs=4 -RFX
 [apply]
   whitespace = fix
 [mergetool]
@@ -32,7 +33,7 @@
 [help]
   autocorrect = 1
 [push]
-  default = simple
+	default = simple
 [merge]
   # Include summaries of merged commits in newly created merge commit messages
   log = true
@@ -80,10 +81,10 @@
   tags = tag -l
   branches = branch -a
   remotes = remote -v
-  # Credit an author on the latest commit
-  credit = "!f() { git commit --amend --author \"$1 <$2>\" -C HEAD; }; f"
-  # Interactive rebase with the given number of latest commits
-  reb = "!r() { git rebase -i HEAD~$1; }; r"
+  # Amend the previous commit w/o editing message
+  amen = "commit --amend --no-edit"
+  # Amend the previous commit w/o editing message including all changes.
+  aamen = "commit --amend --no-edit -a"
   # Find branches containing commit
   fb = "!f() { git branch -a --contains $1; }; f"
   # Find tags containing commit
@@ -94,3 +95,4 @@
   fm = "!f() { git log --pretty=format:'%C(yellow)%h  %Cblue%ad  %Creset%s%Cgreen  [%cn] %Cred%d' --decorate --date=short --grep=$1; }; f"
   # Remove branches that have already been merged with master
   dm = "!git branch --merged | grep -v '\\*' | xargs -n 1 git branch -d"
+  oldest-ancestor = !bash -c 'diff -u <(git rev-list --first-parent "${1:-master}") <(git rev-list --first-parent "${2:-HEAD}") | sed -ne \"s/^ //p\" | head -1' -

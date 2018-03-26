@@ -49,7 +49,7 @@ number_of_padding_clips=$(( ($RANDOM % max_minutes_of_padding) * 60 / 10 ))
 # Make the 10 second padding clip
 echo "Making padding clip"
 ffmpeg \
-  -loglevel panic \
+  -loglevel error \
   -y \
   -i "$in_fullpath_without_backslash" \
   -ss 0 \
@@ -67,9 +67,10 @@ done
 # Add the padding clip many times to the end of the video
 echo "Making final video"
 ffmpeg \
-  -loglevel panic \
+  -loglevel error \
   -y \
   -f concat \
+  -safe 0 \
   -i $playlist_fullpath \
   -c copy "$out_filename"  \
 

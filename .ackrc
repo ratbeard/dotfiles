@@ -1,6 +1,5 @@
 # This file should be at: ~/.ackrc
 #
-# ====
 # Tipz
 # ====
 # !!! ACK ONLY SEARCHES FILE TYPES IT KNOWS ABOUT !!!
@@ -22,6 +21,13 @@
 #
 #   ack -w utility_nav    # doesn't match 'utility_nav_holder'
 #
+# Reduced output by hiding the file name and blank lines inbetween files:
+#
+#   -h --nobreak
+#
+# Use output to display captures:
+#
+# ack "angular.module.*?(service|factory)" --output '$1' -h app/assets/javascripts | sort | uniq
 
 # Follow symbolic links
 --follow
@@ -29,17 +35,30 @@
 # Searching is case-insensitive, unless you include a capital letter
 --smart-case
 
-# ==============
-# Add File types
-# ==============
+# Ignore these directories by default.
+# If you need to search in one, pass on the command line: `--noignore-dir=public` 
+--ignore-dir=vendor
+--ignore-dir=log
+--ignore-dir=tmp
+--ignore-dir=bower_components
+--ignore-dir=node_modules
+--ignore-dir=coverage
+--ignore-dir=spec/coverage
+--ignore-dir=build
+--ignore-dir=dist
+--ignore-dir=bower_components
+--ignore-dir=js/generated
+--ignore-dir=node_modules
+--ignore-dir=public
+--ignore-dir=.cache
+--ignore-dir=.bundle
+--ignore-dir=.node-gyp
+--ignore-dir=.npm
+--ignore-file=is:.bash_history
 
 # Ruby
 --type-add=ruby=.rake,.builder
 --type-set=cucumber=.feature
-
-# Dotnet
---type-add=html=.cshtml,.aspx
---type-add=xml=.csproj
 
 # JS
 --type-set=coffee=.coffee
@@ -55,23 +74,5 @@
 # Html
 --type-add=html=.jade,.erb,.html,.slim
 
-
-# ===================
-# Additional Settings
-# ===================
-
-# Ignore directories
---ignore-dir=vendor
---ignore-dir=log
---ignore-dir=tmp
---ignore-dir=bower_components
---ignore-dir=node_modules
---ignore-dir=coverage
---ignore-dir=spec/coverage
---ignore-dir=build
---ignore-dir=dist
---ignore-dir=bower_components
---ignore-dir=js/generated
---ignore-dir=node_modules
---ignore-dir=public
-
+# misc
+--type-set=swift=.swift

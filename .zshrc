@@ -1,5 +1,4 @@
 export EDITOR='vim'
-export PROJECTS=~/code
 
 #
 # Path
@@ -7,145 +6,88 @@ export PROJECTS=~/code
 path=(
   ./bin
   ./node_modules/.bin
-  $HOME/repos/chrome/depot_tools
+  $HOME/.yarn/bin
   $HOME/bin
   $HOME/.node/bin
   $HOME/.rbenv/shims
   /usr/local/bin
+  /usr/local/opt/postgresql@9.4/bin
+  $HOME/.rvm/bin
   $path
 )
 export MANPATH="/usr/local/man:/usr/local/mysql/man:/usr/local/git/man:$MANPATH"
-export FIREFOX_BIN="/opt/homebrew-cask/Caskroom/firefox/latest/Firefox.app/Contents/MacOS/firefox"
-
-# Rbenv
-if which rbenv > /dev/null; then
-  eval "$(rbenv init -)"
-fi
 
 #
 # Aliases
 #
-# Tier 1
 alias r='. ~/.zshrc'
-alias e='$EDITOR ~/dotfiles'
+alias e='$EDITOR ~/.zshrc'
 alias ..="cd .."
 alias ...="cd ../.."
 function o() { open ${1:-./} }
 function m() { $EDITOR ${1:-./} }
+alias -g D='$(basename $PWD)'
 
-# Tier 2
-function cdl { cd $1; ls; }
+alias d="docker"
+alias dc="docker-compose"
+alias dcb="docker-compose build"
+alias dcr="docker-compose run"
+alias dcu="docker-compose up"
+alias dcud="docker-compose up -d"
+alias dcl="docker-compose logs -f -t"
+
+# Start a shell in the container based on your current directories name (by default).
+dsh() {
+  command="docker-compose run ${1:-$(basename "$PWD")} bash"
+  echo $command
+  eval $command
+}
+
 alias here="pwd | tr '\n' ' '| pbcopy"
-alias goto='cd `pbpaste`' 
 alias cpy="pbcopy"
 alias pst="pbpaste"
-# Trim new lines and copy to clipboard
-#alias c="tr -d '\n' | pbcopy"
 
-if $(gls &>/dev/null); then
-  alias ls="gls -F --color"
-  alias l="gls -lAh --color"
-  alias ll="gls -l --color"
-  alias la='gls -A --color'
-fi
+alias ls="gls -F --color"
+alias l="gls -lAh --color"
 
-# Tier 3
+# Network
 alias dnsflush="dscacheutil -flushcache && killall -HUP mDNSResponder"
 alias whois="whois -h whois-servers.net"
-
-# IP
-alias ip="dig +short myip.opendns.com @resolver1.opendns.com"
-alias localip="ipconfig getifaddr en1"
 alias ips="ifconfig -a | grep -o 'inet6\? \(addr:\)\?\s\?\(\(\([0-9]\+\.\)\{3\}[0-9]\+\)\|[a-fA-F0-9:]\+\)' | awk '{ sub(/inet6? (addr:)? ?/, \"\"); print }'"
 
-# View HTTP traffic
-alias sniff="sudo ngrep -d 'en1' -t '^(GET|POST) ' 'tcp and port 80'"
-alias httpdump="sudo tcpdump -i en1 -n -s 0 -w - | grep -a -o -E \"Host\: .*|GET \/.*\""
-
-# OS X has no `md5sum`, so use `md5` as a fallback
-command -v md5sum > /dev/null || alias md5sum="md5"
-command -v sha1sum > /dev/null || alias sha1sum="shasum"
-
-# Recursively delete `.DS_Store` files
-alias cleanup="find . -type f -name '*.DS_Store' -ls -delete"
-
-# Empty the Trash on all mounted volumes and the main HDD
-# Also, clear Apple’s System Logs to improve shell startup speed
-alias emptytrash="sudo rm -rfv /Volumes/*/.Trashes; sudo rm -rfv ~/.Trash; sudo rm -rfv /private/var/log/asl/*.asl"
-
-# Show/hide hidden files in Finder
-alias show="defaults write com.apple.finder AppleShowAllFiles -bool true && killall Finder"
-alias hide="defaults write com.apple.finder AppleShowAllFiles -bool false && killall Finder"
-
-# Hide/show all desktop icons (useful when presenting)
-alias hidedesktop="defaults write com.apple.finder CreateDesktop -bool false && killall Finder"
-alias showdesktop="defaults write com.apple.finder CreateDesktop -bool true && killall Finder"
-
-# URL-encode strings
-alias urlencode='python -c "import sys, urllib as ul; print ul.quote_plus(sys.argv[1]);"'
-
-# JavaScriptCore REPL
-jscbin="/System/Library/Frameworks/JavaScriptCore.framework/Versions/A/Resources/jsc"
-[ -e "${jscbin}" ] && alias jsc="${jscbin}"
-unset jscbin
-
-# PlistBuddy alias, because sometimes `defaults` just doesn’t cut it
-alias plistbuddy="/usr/libexec/PlistBuddy"
-
-# Lock the screen (when going AFK)
-alias afk="/System/Library/CoreServices/Menu\ Extras/User.menu/Contents/Resources/CGSession -suspend"
-
-# Reload the shell (i.e. invoke as a login shell)
-alias reload="exec $SHELL -l"
-
 # Create a new shell script
-new-script() { 
-  echo "#!/bin/bash" > $1
+new-script() {
+  echo "#!/bin/env bash" > $1
   chmod +x $1 
   $EDITOR $1
 }
 
-# GRC colorizes unix tools
-if $(grc &>/dev/null) && ! $(brew &>/dev/null); then
-  source `brew --prefix`/etc/grc.bashrc
-fi
+# Shortcut to make a file executable
+alias x="chmod u+x"
 
-# Pipe public key to clipboard
-alias pubkey="more ~/.ssh/id_dsa.public | pbcopy | echo '=> Public key copied to pasteboard.'"
 #
 # Git
 #
-
-# Use `hub` as our git wrapper:
-#   http://defunkt.github.com/hub/
-hub_path=$(which hub)
-if (( $+commands[hub] )); then
-  alias git=$hub_path
-fi
-
 alias g='git'
-alias clone="git clone"
-alias push="git push -u origin head"
 
-# Viewing
 alias gl="clear && git log"
-alias gll="git log --graph --pretty=format:'%Cred%h%Creset %an: %s - %Creset %C(yellow)%d%Creset %Cgreen(%cr)%Creset' --abbrev-commit --date=relative"
-alias glp="git log -p"
-alias gs='git status -sb'
-alias ggs="clear && git status -sb"
-# alias grm="git status | grep deleted | awk '{\$1=\$2=\"\"; print \$0}' | \
-           # perl -pe 's/^[ \t]*//' | sed 's/ /\\\\ /g' | xargs git rm"
-alias gd='clear && git diff'
-alias gdc='git diff --cached'
+alias gll="clear && git log --graph --pretty=format:'%Cred%h%Creset %an: %s - %Creset %C(yellow)%d%Creset %Cgreen(%cr)%Creset' --abbrev-commit --date=relative"
+alias glp="clear && git log -p"
 
-# Stash
-alias stash='git stash'
+alias gs="clear && git status -sb"
+alias gd='clear && git diff --color-words'
+alias gdc='clear && git diff --cached'
+
+alias push="git push -u origin head"
+alias pull="git pull && git dm"
+alias stash='git stash -u'
 alias pop='git stash pop'
+alias pick='git cherry-pick'
 
 # Commiting
-function ga() { git add ${@:-./} }
+function ga() { git add ${@:-.} }
 alias gA="git add -A :/"
-alias gap="clear; git add -p"
+alias gap="clear && git add -p"
 alias gc='git commit'
 alias gca='git commit -a'
 
@@ -154,15 +96,6 @@ alias gco='git checkout'
 alias gb='git branch'
 alias gbn='git checkout -b'
 
-# Remotes
-# alias gp='git push origin HEAD'
-# alias gl='git pull --prune'
-
-# Git svn
-alias gsr="git svn rebase"
-alias gsd="git svn dcommit"
-
-
 #
 # Ruby
 #
@@ -170,9 +103,12 @@ alias be="bundle exec"
 alias migrate='bundle exec rake db:migrate'
 alias rollback='bundle exec rake db:rollback'
 alias seed="bundle exec rake db:seed"
+alias console="heroku run console"
 
-# rehash shims
-#rbenv rehash 2>/dev/null
+# Rbenv
+if which rbenv > /dev/null; then
+  eval "$(rbenv init -)"
+fi
 
 # shell thing
 rbenv() {
@@ -189,91 +125,30 @@ rbenv() {
   esac
 }
 
-
-#
-# tmux
-#
-function tm() {
-  [[ -z "$1" ]] && { echo "usage: tm <session>" >&2; return 1; }
-  tmux has -t $1 && tmux attach -t $1 || tmux new -s $1
-}
-
-function __tmux-sessions() {
- local expl
- local -a sessions
- sessions=( ${${(f)"$(command tmux list-sessions)"}/:[ $'\t']##/:} )
- _describe -t sessions 'sessions' sessions "$@"
-}
-#compdef __tmux-sessions tm
-
-
-
-#
-# Svn
-#
-alias svns="svn st"
-alias svnu="svn up"
-alias svnkill="find . -name .svn -print0 | xargs -0 rm -rf"
-
-# Show last log entries, default 5
-function svnl () {
-  svn log -l ${1:-5}
-}
-# Color diffs for SVN, http://www.zalas.eu/viewing-svn-diff-result-in-colors
-function svnd () {
-  svn diff "${@}" | colordiff | less -R;
-}
-
-# Pipe diff to mate
-function svndm () {
-  if [ "$1" != "" ]; then
-    svn diff $@ | mate;
-  else
-    svn diff | mate;
-  fi
-}
-
-
-#
-# Secrets
-#
-if [[ -a ~/.localrc ]]; then
-  source ~/.localrc
-fi
-
-# initialize autocomplete here, otherwise functions won't be loaded
-autoload -U compinit
-compinit
+# Turn on autocompletion.
+autoload -U compinit && compinit
 
 #
 # Zsh Config
 #
-# PROMPT variable is used below...
-#if [[ -n $SSH_CONNECTION ]]; then
-  #export PS1='%m:%3~$(git_info_for_prompt)%# '
-#else
-  #export PS1='%3~$(git_info_for_prompt)%# '
-#fi
-
 export LSCOLORS="exfxcxdxbxegedabagacad"
 export CLICOLOR=true
-HISTFILE=~/.zsh_history
+HISTFILE=~/.history # 
 HISTSIZE=10000
 SAVEHIST=10000
 export HISTIGNORE="ls:cd:cd -:pwd:exit:date:* --help"
 setopt APPEND_HISTORY # adds history
-setopt SHARE_HISTORY # share history between sessions ???
+setopt SHARE_HISTORY # share history between tabs
 setopt EXTENDED_HISTORY # add timestamps to history
 setopt INC_APPEND_HISTORY SHARE_HISTORY  # adds history incrementally and share it across sessions
 setopt HIST_IGNORE_ALL_DUPS  # don't record dupes in history
 setopt HIST_REDUCE_BLANKS
-setopt NO_BG_NICE # don't nice background tasks
 setopt NO_HUP
 setopt NO_LIST_BEEP
 setopt LOCAL_OPTIONS # allow functions to have local options
 setopt LOCAL_TRAPS # allow functions to have local traps
 setopt HIST_VERIFY
-export LANG="en_US.UTF-8" # Prefer US English and use UTF-8
+export LANG="en_US.UTF-8"
 export LC_ALL="en_US.UTF-8"
 setopt PROMPT_SUBST
 #setopt CORRECT
@@ -295,7 +170,7 @@ export MANPAGER="less -X" # Don’t clear the screen after quitting a manual pag
 # To do:
 #  add ctrl+a, ctrl+e and other basics
 #
-# To read: 
+# To read:
 #   http://dougblack.io/words/zsh-vi-mode.html
 #   man zshzle
 bindkey -v
@@ -307,6 +182,26 @@ bindkey '^[[5C' end-of-line
 bindkey '^[[3~' delete-char
 bindkey '^[^N' newtab
 bindkey '^?' backward-delete-char
+
+# Vi-mode
+function zle-keymap-select zle-line-init {
+    # change cursor shape in iTerm2
+    case $KEYMAP in
+        vicmd)      print -n -- "\E]50;CursorShape=0\C-G";;  # block cursor
+        viins|main) print -n -- "\E]50;CursorShape=1\C-G";;  # line cursor
+    esac
+
+    zle reset-prompt
+    zle -R
+}
+
+function zle-line-finish {
+    print -n -- "\E]50;CursorShape=0\C-G"  # block cursor
+}
+
+zle -N zle-line-init
+zle -N zle-line-finish
+zle -N zle-keymap-select
 
 
 #
@@ -372,15 +267,6 @@ ruby_version() {
   fi
 }
 
-#rb_prompt() {
-  #if ! [[ -z "$(ruby_version)" ]]
-  #then
-    #echo "%{$fg_bold[yellow]%}$(ruby_version)%{$reset_color%} "
-  #else
-    #echo ""
-  #fi
-#}
-
 directory_name() {
   echo "%{$fg_bold[cyan]%}%1/%\/%{$reset_color%}"
 }
@@ -400,60 +286,18 @@ set_prompt () {
 }
 
 precmd() {
-  #title "zsh" "%m" "%55<...<%~"
-  #set_prompt
-  # Just the cwd
   print -Pn "\e]2;%~\a"
 }
 
 
-# From http://dotfiles.org/~_why/.zshrc
-# Sets the window title nicely no matter where you are
-function title() {
-  # escape '%' chars in $1, make nonprintables visible
-  a=${(V)1//\%/\%\%}
-
-  # Truncate command, and join lines.
-  a=$(print -Pn "%40>...>$a" | tr -d "\n")
-
-  case $TERM in
-  screen)
-    print -Pn "\ek$a:$3\e\\" # screen title (in ^A")
-    ;;
-  xterm*|rxvt)
-    print -Pn "\e]2;$2\a" # plain xterm title ($3 for pwd)
-    ;;
-  esac
+# Only init nvm when its used
+nvm() {
+  export NVM_DIR="/Users/mfrawley/.nvm"
+  [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
+  nvm "$@"
 }
 
 
-
-#
-# Functions
-#
-# Determine size of a file or total size of a directory
-function fs() {
-  if du -b /dev/null > /dev/null 2>&1; then
-    local arg=-sbh
-  else
-    local arg=-sh
-  fi
-  if [[ -n "$@" ]]; then
-    du $arg -- "$@"
-  else
-    du $arg .[^.]* *
-  fi
-}
-
-
-export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
-
-# Get gulp autocomplete
-eval "$(gulp --completion=zsh)"
-
-# added by travis gem
-[ -f /Users/mfrawley/.travis/travis.sh ] && source /Users/mfrawley/.travis/travis.sh
-
-# This loads nvm
-export NVM_DIR="/Users/mfrawley/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
+# tabtab source for electron-forge package
+# uninstall by removing these lines or running `tabtab uninstall electron-forge`
+[[ -f /Users/mfrawley/code/scrimmage/containers/electron-quick-start/node_modules/tabtab/.completions/electron-forge.zsh ]] && . /Users/mfrawley/code/scrimmage/containers/electron-quick-start/node_modules/tabtab/.completions/electron-forge.zsh

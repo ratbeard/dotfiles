@@ -1,20 +1,45 @@
 set nocompatible
 let mapleader = ","
+
 "
-" Bundles
+" Plugins
 "
-filetype off
-set rtp+=~/.vim/bundle/vundle/
-call vundle#rc()
-"Bundle 'gmarik/vundle'
+call plug#begin('~/.vim/plugged')
+" Features
+Plug 'mileszs/ack.vim'
+Plug 'ctrlpvim/ctrlp.vim'
+Plug 'scrooloose/nerdtree'
+Plug 'scrooloose/nerdcommenter'
+Plug 'flazz/vim-colorschemes'
+Plug 'godlygeek/tabular'
+Plug 'scrooloose/syntastic'
+
+" Languages
+Plug 'slim-template/vim-slim'
+Plug 'groenewege/vim-less'
+Plug 'digitaltoad/vim-jade'
+Plug 'pangloss/vim-javascript'
+Plug 'mxw/vim-jsx'
+Plug 'tpope/vim-surround'
+Plug 'leafgarland/typescript-vim'
+
+" IDE
+Plug 'Shougo/vimproc.vim', {'do' : 'make'}
+  Plug 'Quramy/tsuquyomi'
+
+Plug 'rhysd/devdocs.vim'
+
+" Themes
+Plug 'junegunn/seoul256.vim'
+Plug 'junegunn/goyo.vim'
+Plug 'junegunn/limelight.vim'
+call plug#end()
 
 " Ack
 " :AckFromSearch - ack from current search 
 " v - open result in vertical split
 let g:ack_wildignore = 0
-Bundle 'mileszs/ack.vim'
 nnoremap <leader>a :Ack!
-
 
 " Ctrl-P 
 " https://github.com/kien/ctrlp.vim
@@ -23,15 +48,13 @@ nnoremap <leader>a :Ack!
 " <c-s> open in horizontal split
 " <c-y> create new file (and its parent dirs)
 " <c-z> mark file to be opened, with <c-o>
-Bundle 'kien/ctrlp.vim.git'
 nnoremap <leader>t :CtrlP<CR>
 let g:ctrlp_match_window = 'bottom,order:ttb,min:1,max:15,results:15' " Display options
 let g:ctrlp_switch_buffer = '0'  			" turn off jump to already open file
 let g:ctrlp_root_markers = ['.ctrlp'] " Sets working dir relative to a .git, or a .ctrlp
-let g:ctrlp_custom_ignore = { 'dir': 'node_modules\|build\|tmp\|dist\|bower_components\|public' }
+let g:ctrlp_custom_ignore = { 'dir': 'node_modules\|build\|tmp\|dist\|bower_components\|public\|coverage' }
 
 " NERDTree
-Bundle 'scrooloose/nerdtree'
 noremap <leader>n<space> :NERDTreeToggle <CR>
 noremap <leader>nf :NERDTreeFind<CR>		     
 nnoremap <leader>no :NERDTreeFocus<CR>		
@@ -46,45 +69,24 @@ let NERDTreeHighlightCursorline=1 " Highlight the selected entry in the tree
 let NERDTreeMouseMode=2           " Click to fold directories, double click to open files
 let NERDChristmasTree=1           " More colorful
 let NERDTreeWinPos=0              " 0 for left aligned, 1 for right
-
-Bundle 'scrooloose/nerdcommenter'
-Bundle 'flazz/vim-colorschemes'
-Bundle 'godlygeek/tabular'
-
-" Gist
-Bundle 'mattn/gist-vim'
-Bundle 'mattn/webapi-vim'
-let g:gist_open_browser_after_post = 1
+let g:NERDTreeWinSize=50
 
 " Syntastic - syntax checking on save
-Bundle 'scrooloose/syntastic.git'
 let g:syntastic_mode_map={ 'mode': 'active',
                      \ 'active_filetypes': ['coffee'],
                      \ 'passive_filetypes': ['html'] }
 
-" Languages
-Bundle 'slim-template/vim-slim'
-Bundle 'kchmck/vim-coffee-script.git'
-Bundle 'groenewege/vim-less'
-Bundle 'digitaltoad/vim-jade'
-Plugin 'pangloss/vim-javascript'
-Bundle 'mxw/vim-jsx'
-
-" Snippets
-Bundle 'MarcWeber/vim-addon-mw-utils'
-Bundle 'tomtom/tlib_vim'
-Bundle 'garbas/vim-snipmate'
-"Bundle 'file:///Users/mfrawley/dotfiles-1/.vim/snippets'
-au! BufWritePost *.snippet call ReloadAllSnippets()
-
-filetype indent plugin on
-syntax enable
-
+" Typescript
+let g:typescript_compiler_binary = 'tsc'
+let g:typescript_compiler_options = ''
+autocmd QuickFixCmdPost [^l]* nested cwindow
+autocmd QuickFixCmdPost    l* nested lwindow
 
 "
 " File Aliases
 "
 autocmd BufRead,BufNewFile *.{ru,thor} set ft=ruby
+autocmd BufRead,BufNewFile *.{es6} set ft=javascript
 "au BufRead,BufNewFile *.{html,aspx,master} set ft=html syntax=html5
 "au BufRead,BufNewFile *.{cshtml} set ft=html syntax=cshtml
 
@@ -171,35 +173,6 @@ cnoremap <ESC><C-F> <S-Right>
 cnoremap <ESC><C-H> <C-W>
 
 
-"
-" GUI Settings
-"
-if has("gui_running")
-  syntax on
-  colorscheme fruity
-  "colorscheme lucius
-  "colorscheme desertEx
-  set guioptions=egmtc 
-  set showtabline=2                 "2 enables tabs
-  set antialias   
-  "set guifont=Inconsolata-dz\ For\ Powerline:h11
-  set transp=0      
-
-  " Saving puts you in normal mode
-  "iunmenu File.Save 
-  "imenu <silent> File.Save <Esc>:if expand("%") == ""<Bar>browse confirm w<Bar>else<Bar>confirm w<Bar>endif<CR>
-  
-  " Disable command+s - bad habbit
-  macmenu &File.Save key=<nop>
-  map <D-s> <ESC>
-
-  " Fullscreen takes up entire screen
-  set fuoptions=maxhorz,maxvert
-  
-  " Start without the toolbar
-  set guioptions-=T
-endif
-
 
 "
 " Keymappings
@@ -257,9 +230,9 @@ nnoremap <silent> <leader>C :let _s=@/<Bar>:%s/\s\+$//e<Bar>:let @/=_s<Bar>:nohl
 
 " Edit config files
 function! MyConfigurationFiles()
-  execute ":e ~/.dotfiles/vim/vimrc.symlink"
-  "execute ":vsplit ~/.gvimrc"
-  execute ":vsplit ~/.dotfiles/"
+  execute ":e ~/.vimrc"
+  execute ":vsplit ~/.gvimrc"
+  "execute ":vsplit ~/.dotfiles/"
 endfunction
 map <leader>e :call MyConfigurationFiles()<CR>
 
@@ -292,3 +265,16 @@ nnoremap <leader>ch :let @+=expand("%:p:h")<CR>
 
 " Turn off syntax highlighting in large files.  Source: http://stackoverflow.com/questions/178257/how-to-avoid-syntax-highlighting-for-large-files-in-vim
 autocmd BufWinEnter * if line2byte(line("$") + 1) > 1000000 | syntax clear | endif
+
+" https://www.reddit.com/r/vim/comments/1a4yf1/how_to_automatically_close_unedited_unnamed/
+function! CleanNoNameEmptyBuffers()
+    let buffers = filter(range(1, bufnr('$')), 'buflisted(v:val) && empty(bufname(v:val)) && bufwinnr(v:val) < 0 && (getbufline(v:val, 1, "$") == [""])')
+    if !empty(buffers)
+        exe 'bd '.join(buffers, ' ')
+    else
+        echo 'No buffer deleted'
+    endif
+endfunction
+
+nnoremap <silent> ,C :call CleanNoNameEmptyBuffers()<CR>
+
