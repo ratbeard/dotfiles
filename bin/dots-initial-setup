@@ -32,30 +32,4 @@ sudo chsh -s /usr/local/bin/zsh $USER
 #  curl https://raw.github.com/nixme/dotfiles/master/bin/install-dotfiles | sh
 #fi
 
-##################################### RUBY #####################################
-
-ruby18=1.8.7-p375
-ruby19=1.9.3-p545                   # Current patchlevels
-ruby20=2.1.1
-global_gems="bundler pry"   		 # Gems to install globally for each ruby
-
-# Compile with real GCC and readline. Clang or gcc-llvm make for a buggy MRI,
-# and libedit messes up colored prompts.
-export CC=gcc-4.2
-export RUBY_CONFIGURE_OPTS="--with-readline-dir=`brew --prefix readline`"
-rbenv install $ruby18
-rbenv install $ruby19
-rbenv install $ruby20
-eval "$(rbenv init -)"
-
-rbenv global $ruby20                # Default to Ruby 2.0
-rbenv rehash
-
-rbenv shell $ruby18
-gem install $global_gems
-rbenv shell $ruby19
-gem install $global_gems
-rbenv shell $ruby20
-gem install $global_gems
-
 . dots-osx-defaults

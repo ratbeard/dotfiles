@@ -9,31 +9,26 @@ brew update
 brew upgrade
 brew tap homebrew/dupes
 brew install phinze/cask/brew-cask
+brew tap caskroom/drivers
 brew tap caskroom/versions
 
 brew install wget --enable-iri
 brew install --disable-etcdir zsh
-#brew install git
 brew install tmux
 brew install go
-brew install youtube-dl
 brew install grc
-brew install most
 brew install tree
 brew install readline
-brew install nodejs
-#brew install reattach-to-user-namepsace
-brew install ack 
+brew install ack
 brew install heroku-toolbelt
 brew install postgres
 brew install coreutils
 brew install findutils
 brew install hub
-brew install ruby-build
-brew install rbenv
-brew install apple-gcc42
+#brew install ruby-build
+#brew install rbenv
+#brew install apple-gcc42
 brew cask install google-chrome
-brew cask install google-chrome-canary
 brew cask install imageoptim
 brew cask install iterm2
 brew cask install macvim
@@ -41,44 +36,12 @@ brew cask install the-unarchiver
 brew cask install transmission
 brew cask install virtualbox
 brew cask install vlc
-brew cask install keyremap4macbook
+brew cask install karabiner
 brew cask install adium
 brew cask install limechat
-brew cask install cyberduck
 brew cask install totalterminal
 brew cask install sonos
-brew cask install java7
-brew install maven
-brew cask install google-hangouts
 brew cask install grandperspective
-brew cask install spotify
-brew cask install speedlimit
-brew cask install alfred
-brew cask install jitsi
-brew cask install flash
-brew cask install spectacle # window manager
-brew cask install adapter # Adapter Converts Video, Audio and Images
-brew cask install alib1 # trippy screensaver
-brew cask install all2mp3
-brew cask install arduino
-brew cask install awareness # Subtle awareness of time spent on the computer
-brew cask install beardedspice # Mac Media Keys for the Masses
-
-# brew cask search > /tmp/a
-# sed -n 112,212p /tmp/a | xargs brew cask home
-#
-# someday, maybe:
-#
-# airdisplay
-# amethyst # tiling window manager
-# Apptivate # simpler alfred
-# CCMenu # continuous integration status bar
-# charlesproxy # see http requests
-# cocoadialog # use guy elements in shell scripts
-# cloudapp # dat cloud
-#brew cask install tor-browser
-#brew cask install ukelele
-#brew cask install imagealpha
-#brew cask install miro-video-converter
-#brew cask install dropbox
+brew cask install spectacle
+brew cask install 1password
 
