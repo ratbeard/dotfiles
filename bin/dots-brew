@@ -7,10 +7,8 @@ fi
 
 brew update
 brew upgrade
-brew tap homebrew/dupes
-brew install phinze/cask/brew-cask
 brew tap caskroom/drivers
-brew tap caskroom/versions
+brew tap caskroom/cask
 
 brew install wget --enable-iri
 brew install --disable-etcdir zsh
@@ -44,7 +42,7 @@ brew cask install sonos
 brew cask install grandperspective
 brew cask install spectacle
 brew cask install 1password
-brew cask install vscode
+brew cask install visual-studio-cask
 brew cask install slack
 brew cask install evernote
 brew cask install docker
