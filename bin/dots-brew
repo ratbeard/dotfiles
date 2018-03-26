@@ -45,4 +45,7 @@ brew cask install grandperspective
 brew cask install spectacle
 brew cask install 1password
 brew cask install vscode
+brew cask install slack
+brew cask install evernote
+brew cask install docker
 
